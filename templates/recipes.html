@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>All Recipes</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+</head>
+<body>
+    <h1>All Recipes</h1>
+        <div class="recipe">
+            <h2>{{ recipe[1] }}</h2>
+            <h3>Ingredients:</h3>
+            <p>{{ recipe[2] }}</p>
+            <h3>Instructions:</h3>
+            <p>{{ recipe[3] }}</p>
+        </div>
+    <br>
+    <a href="/">Add a New Recipe</a>
+</body>
+</html>
