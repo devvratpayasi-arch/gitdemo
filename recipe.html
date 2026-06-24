@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Finder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to bottom, #f4f4f4, #e0e0e0);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            position: relative;
+        }
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHZpZXdCb3g9IjAgMCA0MCA0MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8ZGVmcz4KICAgIDxwYXR0ZXJuIGlkPSJwYXR0ZXJuIiBwYXR0ZXJuVW5pdHM9InVzZXJTcGFjZU9uVXNlIiB3aWR0aD0iNDAiIGhlaWdodD0iNDAiIHBhdHRlcm5UcmFuc2Zvcm09InJvdGF0ZSg0NSkiPgogICAgICA8cmVjdCB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIGZpbGw9IiM2NkFGNTciIG9wYWNpdHk9IjAuMSIvPgogICAgPC9wYXR0ZXJuPgogIDwvZGVmcz4KICA8cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI3BhdHRlcm4pIi8+Cjwvc3ZnPg==');
+            opacity: 0.3;
+            z-index: -1;
+        }
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
+        .search-container {
+            text-align: center;
+            padding: 20px;
+        }
+        #search-input {
+            width: 60%;
+            padding: 10px;
+            font-size: 1.2em;
+            border: 2px solid #4CAF50;
+            border-radius: 5px;
+            outline: none;
+        }
+        #search-input:focus {
+            border-color: #45a049;
+        }
+        .results {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            padding: 20px;
+        }
+        .recipe-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            margin: 10px;
+            width: 300px;
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+        .recipe-card:hover {
+            transform: scale(1.05);
+        }
+        .recipe-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .recipe-card h3 {
+            margin: 10px;
+            color: #4CAF50;
+        }
+        .recipe-card p {
+            margin: 10px;
+        }
+        .ingredients, .instructions, .precautions {
+            margin: 10px;
+        }
+        .ingredients ul {
+            list-style-type: disc;
+            padding-left: 20px;
+        }
+        .precautions {
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 10px;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🍳 Recipe Finder</h1>
+        <p>Discover delicious recipes with ingredients and precautions!</p>
+    </header>
+    <div class="search-container">
+        <input type="text" id="search-input" placeholder="Search for a recipe (e.g., Pasta, Salad, Biryani)">
+    </div>
+    <div class="results" id="results"></div>
+    <footer>
+        <p>&copy; 2023 Recipe Finder. Enjoy cooking safely!</p>
+    </footer>
+
+    <script>
+        const recipes = [
+            {
+                name: "Spaghetti Carbonara",
+                image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=", // Placeholder base64 image
+                ingredients: ["200g spaghetti", "100g pancetta", "2 eggs", "50g Parmesan cheese", "Black pepper", "Salt"],
+                instructions: "1. Cook spaghetti in salted boiling water. 2. Fry pancetta until crispy. 3. Whisk eggs with cheese. 4. Drain pasta, mix with pancetta, then add egg mixture off heat. 5. Season with pepper and serve.",
+                precautions: "Ensure eggs are fresh to avoid salmonella. Cook pasta al dente to prevent overcooking. Handle hot pans with oven mitts to avoid burns."
+            },
+            {
+                name: "Caesar Salad",
+                image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=", // Placeholder
+                ingredients: ["Romaine lettuce", "Croutons", "Parmesan cheese", "Caesar dressing", "Anchovies (optional)", "Lemon"],
+                instructions: "1. Wash and chop lettuce. 2. Toss with dressing. 3. Add croutons, cheese, and anchovies. 4. Squeeze lemon on top. 5. Serve immediately.",
+                precautions: "Wash lettuce thoroughly to remove contaminants. If using raw eggs in dressing, ensure they are pasteurized. Check for allergies to anchovies or nuts in dressing."
+            },
+            {
+                name: "Chicken Stir-Fry",
+                image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=", // Placeholder
+                ingredients: ["500g chicken breast", "Mixed vegetables (broccoli, bell peppers)", "Soy sauce", "Garlic", "Ginger", "Oil"],
+                instructions: "1. Slice chicken and marinate in soy sauce. 2. Heat oil, stir-fry garlic and ginger. 3. Add chicken, cook until done. 4. Add vegetables, stir-fry until tender. 5. Serve with rice.",
+                precautions: "Cook chicken to an internal temperature of 75°C to kill bacteria. Use a well-ventilated area when stir-frying to avoid smoke inhalation. Handle sharp knives carefully."
+            },
+            {
+                name: "Butter Chicken",
+                image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=", // Placeholder
+                ingredients: ["500g chicken", "2 tbsp butter", "1 cup tomato puree", "1 cup cream", "Spices (garam masala, turmeric, chili powder)", "Onion, garlic, ginger"],
+                instructions: "1. Marinate chicken in yogurt and spices. 2. Cook chicken until tender. 3. In a pan, sauté onions, garlic, ginger. 4. Add tomato puree, spices, and butter. 5. Stir in cream and cooked chicken. Simmer and serve with naan.",
+                precautions: "Ensure chicken is cooked to 75°C internally. Handle hot oil carefully to avoid splatters. Check for dairy allergies if using cream."
+            },
+            {
+                name: "Chicken Biryani",
+                image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=", // Placeholder
+                ingredients: ["500g basmati rice", "500g chicken", "Onions, tomatoes", "Spices (cumin, coriander, saffron)", "Yogurt", "Fried onions"],
+                instructions: "1. Marinate chicken with yogurt and spices. 2. Cook rice partially. 3. Layer rice, marinated chicken, and fried onions in a pot. 4. Add saffron milk. 5. Cook on low heat until done. Serve hot.",
+                precautions: "Wash rice thoroughly to remove impurities. Cook chicken fully to avoid foodborne illness. Use gloves when handling spices to prevent skin irritation."
+            },
+            {
+                name: "Paneer Tikka",
+                image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=", // Placeholder
+                ingredients: ["250g paneer", "Bell peppers, onions", "Yogurt", "Spices (red chili, garam masala)", "Lemon juice", "Oil"],
+                instructions: "1. Cube paneer and vegetables. 2. Marinate in yogurt, spices, and lemon juice. 3. Skewer and grill or bake at 200°C for 15-20 mins. 4. Turn occasionally. 5. Serve with chutney.",
+                precautions: "Ensure paneer is fresh. Grill in a well-ventilated area to avoid smoke. Check for spice allergies."
+            },
+            {
+                name: "Masala Dosa",
+                image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=", // Placeholder
+                ingredients: ["Dosa batter", "Potatoes", "Onions, mustard seeds", "Curry leaves", "Oil", "Chutney"],
+                instructions: "1. Cook potato filling with spices. 2. Heat dosa pan, pour batter, spread thin. 3. Cook until crispy. 4. Add filling, fold, and serve with chutney.",
+                precautions: "Use a non-stick pan to avoid sticking. Handle hot oil carefully. Ensure batter is fermented properly."
+            },
+            {
+                name: "Chana Masala",
+                image: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k=", // Placeholder
+                ingredients: ["1 cup chickpeas", "Tomatoes, onions", "Spices (cumin, coriander, garam masala)", "Ginger, garlic", "Oil"],
+                instructions: "1. Soak and boil chickpeas. 2. Sauté onions, ginger, garlic. 3. Add tomatoes and spices. 4. Mix in chickpeas, simmer. 5. Serve with rice or bread.",
+                precautions: "Soak chickpeas overnight to reduce cooking time and improve digestibility. Rinse thoroughly to remove anti-nutrients. Cook on medium heat to avoid burning spices."
+            }
+        ];
+
+        const searchInput = document.getElementById('search-input');
+        const resultsDiv = document.getElementById('results');
+
+        function displayRecipes(filteredRecipes) {
+            resultsDiv.innerHTML = '';
+            filteredRecipes.forEach(recipe => {
+                const card = document.createElement('div');
+                card.className = 'recipe-card';
+                card.innerHTML = `
+                    <img src="${recipe.image}" alt="${recipe.name}">
+                    <h3>${recipe.name}</h3>
+                    <div class="ingredients">
+                        <strong>Ingredients:</strong>
+                        <ul>${recipe.ingredients.map(ing => `<li>${ing}</li>`).join('')}</ul>
+                    </div>
+                    <div class="instructions">
+                        <strong>Instructions:</strong>
+                        <p>${recipe.instructions}</p>
+                    </div>
+                    <div class="precautions">
+                        <strong>Precautions:</strong>
+                        <p>${recipe.precautions}</p>
+                    </div>
+                `;
+                resultsDiv.appendChild(card);
+            });
+        }
+
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase();
+            const filtered = recipes.filter(recipe => recipe.name.toLowerCase().includes(query));
+            displayRecipes(filtered);
+        });
+
+        // Display all recipes initially
+        displayRecipes(recipes);
+    </script>
+</body>
+</html>

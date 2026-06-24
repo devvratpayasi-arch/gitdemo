@@ -1,0 +1,23 @@
+import sqlite3
+
+con = sqlite3.connect("recipes.db")
+cur = con.cursor()
+
+cur.execute("""
+CREATE TABLE recipes(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT,
+    ingredients TEXT,
+    steps TEXT
+)
+""")
+
+recipes = [
+    ("Pasta", "pasta,tomato,onion,garlic,cheese", "Boil pasta;Prepare sauce;Mix and serve"),
+    ("Omelette", "egg,onion,salt,oil", "Beat eggs;Cook in pan"),
+    ("Fried Rice", "rice,egg,onion,soy sauce,oil", "Fry onion;Add egg;Add rice")
+]
+
+cur.executemany("INSERT INTO recipes(name, ingredients, steps) VALUES(?,?,?)", recipes)
+con.commit()
+con.close()
